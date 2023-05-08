@@ -1,0 +1,514 @@
+openapi: 3.0.2
+servers:
+  - url: /v3
+info:
+  description: |-
+
+  version: 1.0.17
+  title: Swagger Storyboard - OpenAPI 3.0
+  contact:
+    email: al4363@columbia.edu
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: stories
+    description: Everything about your stories
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+  - name: user
+    description: Operations about user
+paths:
+  /stories:
+    post:
+      tags:
+        - stories
+      summary: Add a new story to the market
+      description: Add a new story to the market
+      operationId: uploadStory
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '405':
+          description: Invalid input
+      requestBody:
+        description: Upload new story in the market
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Story'
+    
+  '/stories/recommend/{userID}':
+    get:
+      tags:
+        - stories
+      summary: Find Story Recommendations for user
+      description: Get recommendations based on user purchase and likes
+      operationId: findStoryByUser
+      parameters:
+        - name: userID
+          in: path
+          description: userID for recommendations
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid status value
+
+  '/stories/genre/{genre}':
+    get:
+      tags:
+        - stories
+      summary: Finds stories by genre
+      description: Finds stories by genre
+      operationId: findStoriesByGenre
+      parameters:
+        - name: genre
+          in: path
+          description: genre for recommendations
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid tag value
+
+  '/stories/{storyId}':
+    get:
+      tags:
+        - stories
+      summary: Find stories by ID
+      description: Returns a single story
+      operationId: getStoryById
+      parameters:
+        - name: storyId
+          in: path
+          description: ID of story to return
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid StoryID supplied
+        '404':
+          description: Story not found
+
+  '/getwrapped/{userID}':
+    get:
+      tags:
+        - stories
+      summary: Find Story Recommendations for user
+      description: Get recommendations based on user purchase and likes
+      operationId: getwrapped
+      parameters:
+        - name: userID
+          in: path
+          description: userID for recommendations
+          required: true
+          explode: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid status value
+
+  '/likestories':
+    post:
+      tags:
+        - stories
+      summary: Like stories by ID
+      description: Like stories by ID
+      operationId: likeStoryById
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid StoryID supplied
+        '404':
+          description: Story not found
+      requestBody:
+        description: Like stories by ID
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+
+  '/buystories':
+    post:
+      tags:
+        - stories
+      summary: Buy stories by ID
+      description: Buy stories by ID
+      operationId: buyStoryById
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+        '400':
+          description: Invalid StoryID supplied
+        '404':
+          description: Story not found
+      requestBody:
+        description: Like stories by ID
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserAction'
+
+
+  '/genImage':
+    post:
+      tags:
+        - stories
+      summary: Generate cover image for story
+      description: ''
+      operationId: uploadPrompt
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid StoryID supplied
+        '404':
+          description: Story not found
+      requestBody:
+        description: Generate Image for story
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Story'
+
+  '/genPrompt':
+    post:
+      tags:
+        - stories
+      summary: Generate prompt for story
+      description: ''
+      operationId: getPrompt
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Story'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Story'
+        '400':
+          description: Invalid StoryID supplied
+        '404':
+          description: Story not found
+      requestBody:
+        description: Generate Image for story
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Story'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Story'
+
+  /user:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: Create user
+      description: This can only be done by the logged in user.
+      operationId: loginUser
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+        description: Created user object
+  # /user/logout:
+  #   get:
+  #     tags:
+  #       - user
+  #     summary: Logs out current logged in user session
+  #     description: ''
+  #     operationId: logoutUser
+  #     parameters: []
+  #     responses:
+  #       default:
+  #         description: successful operation
+
+
+components:
+  schemas:
+    UserAction:
+      x-swagger-router-model: io.swagger.storyboard.model.Purchase
+      properties:
+        userid:
+          type: string
+          example: CDAB10
+        storyid:
+          type: string
+          example: AB10
+        action:
+          type: string
+          example: AB10
+      xml:
+        name: order
+      type: object
+
+    User:
+      x-swagger-router-model: io.swagger.storyboard.model.User
+      properties:
+        id:
+          type: string
+          example: CDAB10
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: James
+        email:
+          type: string
+          example: john@email.com
+        password:
+          type: string
+          example: 12345
+        login:
+          type: string
+          example: false
+      xml:
+        name: user
+      type: object
+    Story:
+      x-swagger-router-model: io.swagger.storyboard.model.Story
+      properties:
+        id:
+          type: string
+          example: AB10
+        name:
+          type: string
+          example: Wallflower
+        genre:
+          type: string
+          example: horror 
+        storybody:
+          type: string
+          example: A king of the hill
+        imageprompt:
+          type: string
+          example: A man in rain
+        imageurl:
+          type: string
+          example: http://s3.story.jpg
+        language:
+          type: string
+          example: english
+        audiourl:
+          type: string
+          example: http://s3.story.mp3
+        message:
+          type: string
+          example: some message
+        
+      xml:
+        name: story
+      type: object
+    ApiResponse:
+      properties:
+        code:
+          type: integer
+          format: int32
+        type:
+          type: string
+        message:
+          type: string
+      xml:
+        name: '##default'
+      type: object
+  requestBodies:
+    Story:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Story'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/Story'
+      description: Story object that needs to be added to the store
+    User:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/User'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/User'
+      description: User object
+    UserAction:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UserAction'
+        application/xml:
+          schema:
+            $ref: '#/components/schemas/UserAction'
+      description: User object
+  # securitySchemes:
+  #   Cognito:
+  #     type: "apiKey"
+  #     name: "Cognito_token"
+  #     in: "header"
+  #     x-amazon-apigateway-authtype: "cognito_user_pools"
