@@ -2,55 +2,126 @@
 <html>
 
 <head>
+    <script type="text/javascript">
+        function checklogin() {
+            if (sessionStorage.getItem("user") == null) {
+                window.location.href = "loginPage.html";
+            }
+            else{
+                user = sessionStorage.getItem("user");
+                story = sessionStorage.getItem("currstory")+"_en_prev"
+                var apigClient = apigClientFactory.newClient();
+                var params = {
+                    storyId: story
+                };
+                var body = {
+                    storyId: story
+                };
+                var additionalParams = {
+                };
+                apigClient.storiesStoryIdGet(params, body, additionalParams)
+                    .then(function (result) {
+                        console.log(result);
+                        document.getElementsByClassName("v9_158")[0].innerHTML = result.data.title;
+                        document.getElementsByClassName("v9_159")[0].innerHTML = result.data.author;
+                        document.getElementsByClassName("v9_166")[0].innerHTML = result.data.summary;
+                        document.getElementsByClassName("v9_167")[0].innerHTML = "<b>Genres</b> "+result.data.genre;
+                        document.getElementsByClassName("v9_155")[0].innerHTML = result.data.price;
+                        document.getElementsByClassName("v9_153")[0].src = result.data.imgsrc;
+                        console.log(result.data.imgsrc);
+
+            }).catch(function (result) {
+                console.log(result);
+            });
+        }
+    }
+    window.onload = checklogin;
+    </script>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="./css/main.css" rel="stylesheet" />
     <div class="header">
         
-        <a href="./search.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
+        <a href="./searchResults.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
    
-        <button type="button" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
+        <button type="button" onclick="window.location.href = './promptgen.html';"  class="v4_591"><span class="v4_60">Generate Prompt</span></button>
         <button type="button" class="v4_59" onclick="window.location.href = './uploadStory1.html';"><span class="v4_60">+ Upload a Story</span></button>
         <img style="float:right;" class="v68_567" src="./images/v68_567.png">
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
-        <img style="float:right;" class="v4_58" src="./images/v4_58.png">
-        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span>
+        <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png">
+        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span> -->
+
+        <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
     </div>
-    <script>
-    
-        function toggleLike(){
-            like_button = document.getElementById("button-like");
-            like_button.classList.toggle("liked");
-        }
-            
-            
-    </script>
+
+      <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
 </head>
 <body>
     
     <a href="./searchResults.html"> <span class="v9_154">Back to Search Results</span></a>
-    <img style="float:right;" class="v9_153" src="./images/v9_153.png">
-    <span class="v9_155">$ 14.99</span>
-    <span class="v9_158">A World of Curiosities</span>
-    <span class="v9_159">By: Louise Penny</span>
+    <img style="float:right;" class="v9_153" src="">
+    <span class="v9_155"></span>
+    <span class="v9_158"></span>
+    <span class="v9_159"></span>
 
-    <span class="v9_166">It’s spring and Three
-        Pines is reemerging after the harsh winter. But not everything buried should come alive again. Not
-        everything lying dormant should reemerge. But something has. <br><br>
+    <span class="v9_166"></span>
 
-        As the villagers prepare for a special celebration, Armand Gamache and Jean-Guy Beauvoir find themselves
-        increasingly worried. A young man and woman have reappeared in the Sûreté du Québec investigators’ lives
-        after many years. The two were young children when their troubled mother was murdered, leaving them damaged,
-        shattered. Now they’ve arrived in the village of Three Pines. But to what end?</span>
+        <span class="v9_167"></span>
 
-        <span class="v9_167"><b>Genres</b> Mystery Fiction Thriller</span>
-        <span class="v68_555">Like this Story!</span> 
-        <button class="button button-like v82_6" id="button-like" onclick="toggleLike()">
-            <i class="fa fa-heart"></i>
-            <span>Like</span>
-          </button>
-    <button type="button" class="v9_156"><span class="v9_157">Add to Cart</span></button>
+    <button type="button" onclick="buy(this)" class="v9_156"><span class="v9_157">Buy</span></button>
+    
 </body>
+<script>
+        // function buy(elem) {
+        // var apigClient = apigClientFactory.newClient();
+        // var params = {'user': sessionStorage.getItem('user'), 'title': sessionStorage.getItem('story') }
+        // var body = {'user': sessionStorage.getItem('user'), 'title': sessionStorage.getItem('story') }
+        // var additionalParams = {};
+        // apigClient.storiesBuyUserIDBookIDGet(params, body, additionalParams)
+        //     .then(function (result) {
+        //         console.log(result);
+        //         alert("You have successfully purchased "+elem.name+"!");
+        //         tmp = JSON.parse(sessionStorage.getItem('buys'));
+        //         tmp.push(elem.name);
+        //         sessionStorage.setItem('buys', JSON.stringify(tmp));
+        //         window.location.href = "readingShelf.html";
+        //     }).catch(function (result) {
+        //         console.log(result);
+        //     });
+        // }
+    function buy(elem) {
+        var apigClient = apigClientFactory.newClient();
+        var params = {'user': sessionStorage.getItem('user'), 
+        'title': sessionStorage.getItem('currstory'),
+        'action':'BUY' }
+        var body = {'user': sessionStorage.getItem('user'), 
+        'title': sessionStorage.getItem('currstory'),
+        'action':'BUY' }
+        var additionalParams = {};
+        apigClient.buystoriesPost(params, body, additionalParams)
+            .then(function (result) {
+                console.log(result);
+                alert("You have successfully purchased "+sessionStorage.getItem('currstory')+"!");
+                tmp = JSON.parse(sessionStorage.getItem('buys'));
+                tmp.push(sessionStorage.getItem('currstory'));
+                sessionStorage.setItem('buys', JSON.stringify(tmp));
+                console.log(sessionStorage.getItem('buys'));
+                window.location.href = "readingShelf.html";
+            }).catch(function (result) {
+                console.log(result);
+            });
+    }
+    </script>
 </html>

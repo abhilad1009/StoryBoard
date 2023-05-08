@@ -2,44 +2,86 @@
 <html>
 
 <head>
+        <script type="text/javascript">
+        function checklogin() {
+            if (sessionStorage.getItem("user") == null) {
+                window.location.href = "loginPage.html";
+
+        }
+        else{
+            document.getElementsByClassName("v30_175")[0].innerHTML = sessionStorage.getItem("user");
+        }
+    }
+        window.onload = checklogin;
+    </script>
+
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
+      <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
     <div class="header">
         
-        <a href="./search.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
+        <a href="./searchResults.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
    
-        <button type="button" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
+        <button type="button" onclick="window.location.href = './promptgen.html';" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
         <button type="button" class="v4_59" onclick="window.location.href = './uploadStory1.html';"><span class="v4_60">+ Upload a Story</span></button>
         <img style="float:right;" class="v68_567" src="./images/v68_567.png">
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
-        <img style="float:right;" class="v4_58" src="./images/v4_58.png">
-        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span>
+        <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png"> -->
+        <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
     </div>
 </head>
 <body>
-    <span class="v30_171">John Doe (johnd1218)</span>
+
+    <span class="v30_171">Profile Info</span>
     <hr class="v32_2491">
     <span class="v30_174">Email</span>
-    <div class="v30_175">youremail@gmail.com</div> 
-    <img class="v30_196" src="./images/v30_196.png">
+    <div class="v30_175"></div> 
+    <!-- <img class="v30_196" src="./images/v30_196.png"> -->
     <span class="v30_177">Password</span>
+    <input class="v30_178" disabled>  </input> 
     <img class="v30_199" src="./images/v30_199.png">
-    <span class="v30_178">*****************</span>
-    <span class="v30_180">Payment Details</span>
-    <img class="v30_200" src="./images/v30_200.png">
-    <span class="v30_181">Card Number</span>
-    <span class="v30_183">XXXX XXXX XXXX 1234</span>
-    <span class="v30_185">Expiry Date</span>
-    <span class="v30_186">XX/XX</span>
-    <span class="v30_189">Cardholder Name</span>
-    <span class="v30_188">Firstname Lastname</span>
-    <span class="v30_192">CVV</span>
-    <span class="v30_191">XXX</span>
+
     
-    <button type="button" class="v145_2"><span class="v145_3">Generate Wrapped</span></button>
-    <button type="button" class="v30_194" onclick="window.location.href = './loginPage.html';"><span class="v30_195">Sign Out</span></button>
+    <button type="button" class="v145_2" onclick="getwrapped()"><span class="v145_3">Generate Wrapped</span></button>
+    <!-- <button type="button" class="v30_194" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><span class="v30_195">Sign Out</span></button> -->
+    <div id="imgcont">
+
+    </div>
 
 </body>
+
+<script>
+    function getwrapped() {
+        var apigClient = apigClientFactory.newClient();
+        var params = {
+            "userID": sessionStorage.getItem("user")
+        };
+        var body = {
+            "userID": sessionStorage.getItem("user")
+        };
+        var additionalParams = {};
+        apigClient.getwrappedUserIDGet(params, body, additionalParams)
+            .then(function(result) {
+                img = document.createElement("img");
+                cont =document.getElementById("imgcont");
+                cont.innerHTML = "";
+                img.src = result.data.s3url;
+                cont.appendChild(img);
+            }).catch(function(result) {
+                console.log(result);
+            });
+    }
+</script>
 </html>

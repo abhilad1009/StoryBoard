@@ -2,18 +2,38 @@
 <html>
 
 <head>
+        <script type="text/javascript">
+        function checklogin() {
+            if (sessionStorage.getItem("user") == null) {
+                window.location.href = "loginPage.html";
+            }
+        }
+        window.onload = checklogin;
+    </script>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
+      <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
     <div class="header">
         
-        <a href="./search.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
+        <a href="./searchResults.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
    
-        <button type="button" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
+        <button type="button" onclick="window.location.href = './promptgen.html';"  class="v4_591"><span class="v4_60">Generate Prompt</span></button>
         <button type="button" class="v4_59" onclick="window.location.href = './uploadStory1.html';"><span class="v4_60">+ Upload a Story</span></button>
         <img style="float:right;" class="v68_567" src="./images/v68_567.png">
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
-        <img style="float:right;" class="v4_58" src="./images/v4_58.png">
-        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span>
+        <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png">
+        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span> -->
+        <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
     </div>
@@ -22,7 +42,40 @@
     <span class="v32_249">Uploading a Story</span>
     <hr class="v32_2491">
     <span class="v70_801">Step 3</span> 
-    <div class="v70_805"></div>
-    <button type="button" class="v70_803" onclick="window.location.href = './uploadStory4.html';"><span class="v70_804">Generate Book Cover Art</span></button>
+    <div class="v70_823"></div>
+    <span class="v70_755">Image Prompt</span><textarea class="v70_779" rows = "4" cols="50">Please enter the prompt to generate image</textarea>
+    <button type="button" class="v70_803" onclick="getimg()"><span class="v70_804">Generate Cover Art</span></button>
+    <button type="button" class="v70_825" onclick="window.location.href = './uploadStory5.html';"><span class="v70_826">Next</span></button>
 </body>
+<script>
+    function getimg() {
+        var apigClient = apigClientFactory.newClient();
+        title = sessionStorage.getItem("uploadtitle");
+        imgprompt = document.getElementsByClassName("v70_779")[0].value;
+        var params = {
+            "title": title,
+            "prompt": imgprompt
+        };
+        var body = {
+            "title": title,
+            "prompt": imgprompt
+        };
+        var additionalParams = {};
+        apigClient.genImagePost(params, body, additionalParams)
+            .then(function(result) {
+                console.log(result);
+                var src = document.getElementsByClassName("v70_823")[0];
+                src.innerHTML = "";
+                var img = document.createElement("img");
+                img.height = 460;
+                img.width = 347;
+
+                img.src = result.data.imgurl;
+                sessionStorage.setItem("uploadimgurl", result.data.imgurl);
+                src.appendChild(img);
+            }).catch(function(result) {
+                console.log(result);
+            });
+    }
+</script>
 </html>

@@ -27,12 +27,13 @@
         
         <a href="./searchResults.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
    
-        <button type="button" onclick="window.location.href = './promptgen.html';"  class="v4_591"><span class="v4_60">Generate Prompt</span></button>
+        <button type="button" onclick="window.location.href = './promptgen.html';" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
         <button type="button" class="v4_59" onclick="window.location.href = './uploadStory1.html';"><span class="v4_60">+ Upload a Story</span></button>
         <img style="float:right;" class="v68_567" src="./images/v68_567.png">
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
         <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png">
         <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span> -->
+
         <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
@@ -41,17 +42,30 @@
 <body>
     <span class="v32_249">Uploading a Story</span>
     <hr class="v32_2491">
-    <span class="v70_775">Step 2</span> 
-    <span class="v70_751">Story Content</span><textarea class="v70_777" rows = "4" cols="50">Please enter the story content</textarea><br>
-    
-    <button type="button" class="v70_783" onclick="nextstep()"><span class="v70_784">Next</span></button>
+    <span class="v70_751">Prompt</span><textarea class="v70_777" rows = "3" cols="50">Please enter what kind of story outline do you want</textarea><br>
+    <span class="v70_755">Generated Outline</span><textarea class="v70_779" rows = "4" cols="50"></textarea>
+    <button type="button" class="v70_803" onclick="getoutline()"><span class="v70_804">Generate Outline</span></button>
 </body>
 <script>
-    function nextstep(params) {
-        content = document.getElementsByClassName("v70_777")[0].value;
-        sessionStorage.setItem("uploadcontent", content);
-        window.location.href = "./uploadStory3.html";
-        
+    function getoutline() {
+        var apigClient = apigClientFactory.newClient();
+        prompt = document.getElementsByClassName("v70_777")[0].value;
+        var params = {
+            "prompt": prompt
+        };
+        var body = {
+            "prompt": prompt
+        };
+        var additionalParams = {};
+        apigClient.genPromptPost(params, body, additionalParams)
+            .then(function(result) {
+                console.log(result);
+                var src = document.getElementsByClassName("v70_779")[0];
+                src.innerHTML = result.data.outline;
+
+            }).catch(function(result) {
+                console.log(result);
+            });
     }
 </script>
 </html>

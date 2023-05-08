@@ -3,13 +3,16 @@
 
 <head>
         <script type="text/javascript">
-        function checklogin() {
+        async function checklogin() {
             if (sessionStorage.getItem("user") == null) {
                 window.location.href = "loginPage.html";
-            }
+            await pyodide.loadPackage("wordcloud");
+
         }
         window.onload = checklogin;
     </script>
+        <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
       <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
@@ -33,68 +36,74 @@
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
         <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png">
         <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span> -->
-        <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
     </div>
 </head>
 <body>
-    <span class="v61_303">Almost there!</span>
+    <py-script>
+        import asyncio
+        import micropip
+        async def getwordcloud():
+            await micropip.install("matplotlib")
+            await micropip.install("boto3")
+            await micropip.install("wordcloud")
+        asyncio.ensure_future(getwordcloud())
+    </py-script>
+
+    <span class="v30_171">John Doe (johnd1218)</span>
     <hr class="v32_2491">
-    <span class="v61_305">Set a price for your work</span> <input class="v61_306" type="text" placeholder="Please enter the price">
-    <div class="v61_308"><b>Terms and Conditions</b> <br>
-        We may modify these terms or any additional terms that apply to a Service to, for example, reflect changes
-        to the law or changes to our Services. You should look at the terms regularly. We’ll post notice of
-        modifications to these ...</div>
-        <span class="v61_310">Click here to view the full Terms and Conditions</span>
+    <span class="v30_174">Email</span>
+    <div class="v30_175"><input> </input> </div> 
+    <img class="v30_196" src="./images/v30_196.png">
+    <span class="v30_177">Password</span>
+    <img class="v30_199" src="./images/v30_199.png">
 
-        <input type="checkbox" class="v61_311"> <span class="v61_312">I agree to the given Terms and Conditions</span>
+    
+    <button type="button" class="v145_2" ><span class="v145_3">Generate Wrapped</span></button>
+    <button type="button" class="v30_194" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><span class="v30_195">Sign Out</span></button>
+    <div id="imgcont">
 
-        <button type="button" class="v61_313" onclick="uploadstory()"><span class="v61_314">Publish</span></button>
+    </div>
+    <py-script>
+        from js import document 
+        from pyodide.ffi import create_proxy
+
+        def runPython(proxy):
+            import json
+            import boto3
+            import matplotlib.pyplot as plt
+            from collections import defaultdict
+            import matplotlib.gridspec as gridspec
+            import os
+            from wordcloud import WordCloud, STOPWORDS
+
+            print("you clicked me")
+
+        function_proxy = create_proxy(runPython)
+
+        document.getElementsByClassName("v145_2")[0].addEventListener("click", function_proxy)
+
+    </py-script>
 </body>
+
 <script>
-    function uploadstory() {
-        var uploadauthor = sessionStorage.getItem("user");
-        var uploadprice = document.getElementsByClassName("v61_306")[0].value;
-        var uploadcontent = sessionStorage.getItem("uploadcontent");
-        var uploadtitle = sessionStorage.getItem("uploadtitle");
-        var uploadgenre = sessionStorage.getItem("uploadgenre");
-        var uploadimgsrc = sessionStorage.getItem("uploadimgurl");
-        if (uploadprice == "") {
-            alert("Please enter the price");
-            return;
-        }
-        checked = document.getElementsByClassName("v61_311")[0].checked;
-        if (!checked) {
-            alert("Please agree to the terms and conditions");
-            return;
-        }
+    function getwrapped() {
         var apigClient = apigClientFactory.newClient();
         var params = {
-            "author": uploadauthor,
-            "title": uploadtitle,
-            "genre": uploadgenre,
-            "price": uploadprice,
-            "content": uploadcontent,
-            "imgsrc": uploadimgsrc
+            "userID": sessionStorage.getItem("user")
         };
         var body = {
-            "author": uploadauthor,
-            "title": uploadtitle,
-            "genre": uploadgenre,
-            "price": uploadprice,
-            "content": uploadcontent,
-            "imgsrc": uploadimgsrc
+            "userID": sessionStorage.getItem("user")
         };
         var additionalParams = {};
-        apigClient.storiesPost(params, body, additionalParams)
+        apigClient.getwrappedUserIDGet(params, body, additionalParams)
             .then(function(result) {
-                console.log(result);
-                tmp = JSON.parse(sessionStorage.getItem('story'));
-                tmp.push(uploadtitle);
-                sessionStorage.setItem('story', JSON.stringify(tmp));
-                alert("Upload successfully!");
-                window.location.href = "./searchResults.html";
+                img = document.createElement("img");
+                cont =document.getElementById("imgcont");
+                cont.innerHTML = "";
+                img.src = result.data.s3url;
+                cont.appendChild(img);
             }).catch(function(result) {
                 console.log(result);
             });

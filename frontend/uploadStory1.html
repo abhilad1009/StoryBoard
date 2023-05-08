@@ -2,18 +2,38 @@
 <html>
 
 <head>
+        <script type="text/javascript">
+        function checklogin() {
+            if (sessionStorage.getItem("user") == null) {
+                window.location.href = "loginPage.html";
+            }
+        }
+        window.onload = checklogin;
+    </script>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
+      <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
     <div class="header">
         
-        <a href="./search.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
+        <a href="./searchResults.html"> <img style="float:left;" class="logo_img" src="./images/v61_360.png"></a>
    
-        <button type="button" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
+        <button type="button" onclick="window.location.href = './promptgen.html';" class="v4_591"><span class="v4_60">Generate Prompt</span></button>
         <button type="button" class="v4_59" onclick="window.location.href = './uploadStory1.html';"><span class="v4_60">+ Upload a Story</span></button>
         <img style="float:right;" class="v68_567" src="./images/v68_567.png">
         <span class="v69_568"><a style="color:white" href="./readingShelf.html">Reading Shelf</a></span>
-        <img style="float:right;" class="v4_58" src="./images/v4_58.png">
-        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span>
+        <!-- <img style="float:right;" class="v4_58" src="./images/v4_58.png">
+        <span style="float:right;" class="v4_57"><a style="color:white" href="./myCart.html">Cart</a></span> -->
+        <span style="float:right;" class="v4_57" onclick="sessionStorage.clear(); window.location.href = './loginPage.html';"><a style="color:white" href="">Logout</a></span>
         <img style="float:right;" class="v4_55" src="./images/v4_55.png">
         <span style="float:right;" class="v4_56"><a style="color:white" href="./myProfile.html">My Profile</a></span>
     </div>
@@ -24,12 +44,25 @@
     <span class="v70_772">Step 1</span>
     <span  class="v32_252">Story Title</span> <input class="v32_253" type="text" placeholder="Please enter your story title">
     <span  class="v61_255">Genre</span><select class="v61_256">
-        <option value="genre">Please choose atleast 1 genre</option>
-        <option value="fantasy">Fantasy</option>
-        <option value="horror">Horror</option>
-        <option value="memoir">Memoir</option>
+            <option value="fantasy">Fantasy</option>
+            <option value="horror">Horror</option>
+            <option value="rommance">Romance</option>
+            <option value="kids">Kids</option>
+            <option value="mystery">Mystery</option>
+            <option value="comdey">Comedy</option>
+            <option value="drama">Drama</option>
       </select>
+      
 
-      <button type="button" class="v61_352" onclick="window.location.href = './uploadStory2.html';"><span class="v61_353">Next</span></button>
+      <button type="button" class="v61_352" onclick="nextstep()"><span class="v61_353">Next</span></button>
 </body>
+<script>
+    function nextstep(params) {
+        title = document.getElementsByClassName("v32_253")[0].value;
+        genre = document.getElementsByClassName("v61_256")[0].value;
+        sessionStorage.setItem("uploadtitle", title);
+        sessionStorage.setItem("uploadgenre", genre);
+        window.location.href = './uploadStory2.html';
+    }
+</script>
 </html>

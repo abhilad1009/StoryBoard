@@ -4,6 +4,17 @@
 <head>
     <link href="https://fonts.googleapis.com/css?family=Inter&display=swap" rel="stylesheet" />
     <link href="./css/main.css" rel="stylesheet" />
+      <script type="text/javascript" src="apiGateway-js-sdk/lib/axios/dist/axios.standalone.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/hmac-sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/rollups/sha256.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/hmac.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/CryptoJS/components/enc-base64.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/url-template/url-template.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/sigV4Client.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/apiGatewayClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/simpleHttpClient.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/lib/apiGatewayCore/utils.js"></script>
+	<script type="text/javascript" src="apiGateway-js-sdk/apigClient.js"></script>
     <div class="header">
         
         
@@ -14,11 +25,48 @@
     <form>
     <input class="v145_8" type="text" placeholder="Email">
     <input class="v145_10" type="text" placeholder="Password">
-    <button type="submit" formaction="./search.html" class="v145_15"><span class="v145_16">Login</span></button>
+    <button type="button"  class="v145_15" onclick="login()"><span class="v145_16">Login</span></button>
 </form>
 
     <span class="v145_11">New Here?</span>
     <span class="v145_6">Sign up and discover your next favorite book!</span>
     <button type="button" onclick="window.location.href = './signUpPage.html';" class="v145_12"><span class="v145_14">Sign Up</span></button>
 </body>
+<script>
+function login() {
+
+    var username = document.getElementsByClassName("v145_8")[0].value;
+    var password = document.getElementsByClassName("v145_10")[0].value;
+    var body = {
+        "username": username,
+        "password": password
+    };
+    var params = {
+        "username": username,
+        "password": password
+    };
+
+
+  var apigClient = apigClientFactory.newClient();
+
+  var additionalParams = {};
+  apigClient.userLoginPost(params, body, additionalParams)
+    .then(function (result) {
+      console.log(result);
+      if (result.data != "") {
+        sessionStorage.setItem("user", result.data.user);
+        sessionStorage.setItem("story", JSON.stringify(result.data.story));
+        sessionStorage.setItem("buys", JSON.stringify(result.data.buys));
+        sessionStorage.setItem("likes", JSON.stringify(result.data.likes));
+        window.location.href = "searchResults.html";
+      }
+      else {
+        alert("Incorrect username or password");
+      }
+    })
+
+
+}
+
+</script>
 </html>
